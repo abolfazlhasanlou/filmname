@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>تبدیل متن فیلمنامه به فایل ورد</title>
+    <script src="https://unpkg.com/docx@8.0.0/build/index.js"></script>
+    <style>
+        body { font-family: Tahoma, sans-serif; padding: 20px; background: #f9f9f9; }
+        textarea { width: 100%; height: 300px; font-size: 16px; padding: 10px; }
+        button { margin-top: 15px; padding: 10px 20px; font-size: 18px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>تبدیل متن فیلمنامه به فایل ورد</h1>
+    <textarea id="textInput" placeholder="متن فیلمنامه را اینجا وارد کنید..."></textarea>
+    <br />
+    <button onclick="generateDocx()">ساخت فایل ورد و دانلود</button>
+
+    <script>
+        async function generateDocx() {
+            const { Document, Packer, Paragraph, TextRun } = window.docx;
+            const text = document.getElementById('textInput').value.trim();
+
+            if (!text) {
+                alert('لطفاً متن فیلمنامه را وارد کنید.');
+                return;
+            }
+
+            const doc = new Document({
+                sections: [{
+                    children: [
+                        new Paragraph({
+                            children: [new TextRun(text)]
+                        })
+                    ]
+                }]
+            });
+
+            const blob = await Packer.toBlob(doc);
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'film-script.docx';
+            link.click();
+        }
+    </script>
+</body>
+</html>
